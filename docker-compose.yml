@@ -1,0 +1,12 @@
+version: "3.3"
+services:
+  aws_stepfunc:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aws_stepfunc
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./:/home
+
