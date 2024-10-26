@@ -1,0 +1,15 @@
+name: makeStack
+action: aws:createStack
+maxAttempts: 1
+onFailure: Abort
+inputs:
+  Capabilities:
+  - CAPABILITY_IAM
+  StackName: myStack
+  TemplateURL: http://s3.amazonaws.com/amzn-s3-demo-bucket/myStackTemplate
+  TimeoutInMinutes: 5
+  Parameters:
+    - ParameterKey: LambdaRoleArn
+      ParameterValue: "{{LambdaAssumeRole}}"
+    - ParameterKey: createdResource
+      ParameterValue: createdResource-{{automation:EXECUTION_ID}}

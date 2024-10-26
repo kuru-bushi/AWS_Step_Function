@@ -4,6 +4,7 @@
 - launch.json
     - 
 
+
 # ミニステップ
 1. チュートリアル
     - CMakeLists.txt の作成
@@ -46,4 +47,18 @@
         - https://rinatz.github.io/cpp-book/debug-vscode/
         - https://zenn.dev/danishi/articles/aws-sam-local-debug
 
+
+- 
+
+# aws cli
+https://docs.aws.amazon.com/ja_jp/cli/latest/userguide/getting-started-install.html
+```
+$ curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+$ unzip awscliv2.zip
+$ ./aws/install
+```
+
+```
+
+```
 

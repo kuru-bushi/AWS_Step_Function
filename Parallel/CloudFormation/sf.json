@@ -1,0 +1,173 @@
+{
+    "Comment": "An example of the Amazon States Language for using batch job with pre-processing lambda",
+    "StartAt": "1st",
+    "TimeoutSeconds": 3600,
+    "States": {
+      "1st": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke",
+        "OutputPath": "$.Payload",
+        "Parameters": {
+          "Payload.$": "$",
+          "FunctionName": "arn:aws:lambda:ap-northeast-1:402128679356:function:pro-1st:$LATEST"
+        },
+        "Next": "Map",
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "Comment": "Error",
+            "ResultPath": null,
+            "Next": "Error Catcher"
+          }
+        ]
+      },
+      "Error Catcher": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke",
+        "Parameters": {
+          "Payload.$": "$",
+          "FunctionName": "arn:aws:lambda:ap-northeast-1:402128679356:function:pro-error:$LATEST"
+        },
+        "Retry": [
+          {
+            "ErrorEquals": [
+              "Lambda.ServiceException",
+              "Lambda.AWSLambdaException",
+              "Lambda.SdkClientException",
+              "Lambda.TooManyRequestsException"
+            ],
+            "IntervalSeconds": 1,
+            "MaxAttempts": 3,
+            "BackoffRate": 2
+          }
+        ],
+        "End": true
+      },
+      "Map": {
+        "Type": "Map",
+        "ItemProcessor": {
+          "ProcessorConfig": {
+            "Mode": "DISTRIBUTED",
+            "ExecutionType": "STANDARD"
+          },
+          "StartAt": "2nd",
+          "States": {
+            "2nd": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::lambda:invoke",
+              "OutputPath": "$.Payload",
+              "Parameters": {
+                "Payload.$": "$",
+                "FunctionName": "arn:aws:lambda:ap-northeast-1:402128679356:function:pro-2nd:$LATEST"
+              },
+              "End": true
+            }
+          }
+        },
+        "Next": "3rd",
+        "Label": "Map",
+        "MaxConcurrency": 1000,
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "Comment": "Error",
+            "Next": "Error Catcher",
+            "ResultPath": "$.TestRequestPram"
+          }
+        ],
+        "ResultPath": "$.testRequestParams",
+        "InputPath": "$.map-list"
+      },
+      "3rd": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::lambda:invoke",
+        "Parameters": {
+          "Payload.$": "$",
+          "FunctionName": "arn:aws:lambda:ap-northeast-1:402128679356:function:pro-3rd:$LATEST"
+        },
+        "Next": "dist parallel",
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "Comment": "Error",
+            "Next": "Error Catcher",
+            "ResultPath": "$"
+          }
+        ],
+        "OutputPath": "$.Payload"
+      },
+      "dist parallel": {
+        "Type": "Map",
+        "ItemProcessor": {
+          "ProcessorConfig": {
+            "Mode": "DISTRIBUTED",
+            "ExecutionType": "STANDARD"
+          },
+          "StartAt": "4th",
+          "States": {
+            "4th": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::lambda:invoke",
+              "Parameters": {
+                "Payload.$": "$",
+                "FunctionName": "arn:aws:lambda:ap-northeast-1:402128679356:function:pro-4th:$LATEST"
+              },
+              "End": true,
+              "OutputPath": "$.Payload"
+            }
+          }
+        },
+        "Next": "Map (2)",
+        "Label": "distparallel",
+        "MaxConcurrency": 1000,
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "Comment": "Error",
+            "Next": "Error Catcher",
+            "ResultPath": "$.ErrorLambdaRequest"
+          }
+        ],
+        "InputPath": "$.map_list"
+      },
+      "Map (2)": {
+        "Type": "Map",
+        "ItemProcessor": {
+          "ProcessorConfig": {
+            "Mode": "INLINE"
+          },
+          "StartAt": "5th",
+          "States": {
+            "5th": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::lambda:invoke",
+              "OutputPath": "$.Payload",
+              "Parameters": {
+                "Payload.$": "$",
+                "FunctionName": "arn:aws:lambda:ap-northeast-1:402128679356:function:pro-5th:$LATEST"
+              },
+              "End": true
+            }
+          }
+        },
+        "End": true,
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.ALL"
+            ],
+            "Comment": "Error",
+            "Next": "Error Catcher"
+          }
+        ]
+      }
+    }
+  }
