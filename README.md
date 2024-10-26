@@ -14,6 +14,8 @@
     - AWS Lambda, Step Functions の作成(シンプルな構成)
     - launch.json で Lambda, Stedp Function 動かす
     - Lambda, Step Functions を複雑にする
+        - 並列化したい
+
 
 
 # 処理フロー
@@ -62,3 +64,8 @@ $ ./aws/install
 
 ```
 
+
+# コンテナの作成(Amazon Linux 2023)
+- 下記を参考にした
+    - https://github.com/amazonlinux/container-images/blob/36c1aadfc5c6f53c0572a40d41ede17b7c355bc9/Dockerfile
+-
