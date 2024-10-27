@@ -12,18 +12,19 @@ class Trainer():
         print(f"/opt/ml: {os.listdir(sagemaker_prefix)}")
         print(f"/opt/ml/input: {os.listdir(sagemaker_prefix + '/input')}")
         print(f"/opt/ml/input/data: {os.listdir(sagemaker_prefix + '/input/data')}")
-        print(f"/opt/ml/input/config: {os.listdir(sagemaker_prefix + '/input/data/config')}")
+        print(f"/opt/ml/input/data/train: {os.listdir(sagemaker_prefix + '/input/data/train')}")
+        print(f"/opt/ml/input/config: {os.listdir(sagemaker_prefix + '/input/config')}")
         print(f"/opt/ml/output: {os.listdir(sagemaker_prefix + '/output')}")
         print(f"/opt/ml/output/metrics: {os.listdir(sagemaker_prefix + '/output/metrics')}")
         print(f"/opt/ml/output/data: {os.listdir(sagemaker_prefix + '/output/data')}")
-        print(f"/opt/ml/output/data/profiler: {os.listdir(sagemaker_prefix + '/output/data/profiler')}")
+        print(f"/opt/ml/output/profiler: {os.listdir(sagemaker_prefix + '/output/profiler')}")
         # debug
         # sagemaker_prefix = "your workdir"
 
 
         filename = 'model.pkl'
         sage_model_pth = os.path.join(sagemaker_prefix, "model", filename)
-        path = os.path.join(sagemaker_prefix, "data/input/test-4021", "iris_dataset.csv")
+        path = os.path.join(sagemaker_prefix, "input/data/train", "iris_dataset.csv")
 
         print(sagemaker_prefix)
         print(path)
