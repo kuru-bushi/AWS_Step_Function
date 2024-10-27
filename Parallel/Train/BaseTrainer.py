@@ -10,13 +10,15 @@ class Trainer():
     def train(self):
         sagemaker_prefix = "/opt/ml"
         print(f"/opt/ml: {os.listdir(sagemaker_prefix)}")
+        print(f"/opt/ml/input: {os.listdir(sagemaker_prefix + "/input")}")
+        print(f"/opt/ml/output: {os.listdir(sagemaker_prefix + "/output")}")
         # debug
         # sagemaker_prefix = "your workdir"
 
 
         filename = 'model.pkl'
-        sage_model_pth = os.path.join(sagemaker_prefix, filename)
-        path = os.path.join(sagemaker_prefix, "iris_dataset.csv")
+        sage_model_pth = os.path.join(sagemaker_prefix, "model", filename)
+        path = os.path.join(sagemaker_prefix, "input", "iris_dataset.csv")
         print(sagemaker_prefix)
         print(path)
         ########################
@@ -28,7 +30,6 @@ class Trainer():
         x_cls, y_col = cols[0:(len_col-1)], cols[-1]
         X =df.loc[:, x_cls].values
         y = df.loc[:, y_col].values
-
 
         # 学習と保存
         print("start regression ...")
