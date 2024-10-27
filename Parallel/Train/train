@@ -1,0 +1,26 @@
+#%%
+import yaml, os, json
+import pandas as pd
+import numpy as np
+from sklearn.linear_model import LinearRegression
+import pickle
+
+sagemaker_prefix = "/opt/ml"
+# debug
+# sagemaker_prefix = "your workdir"
+
+filename = 'model.pkl'
+sage_model_pth = os.path.join(sagemaker_prefix, filename)
+path = os.path.join(sagemaker_prefix, "iris_dataset.csv")
+
+df = pd.read_csv(path)
+cols = df.columns
+len_col = len(cols)
+x_cls, y_col = cols[0:(len_col-1)], cols[-1]
+X =df.loc[:, x_cls].values
+y = df.loc[:, y_col].values
+
+# 学習と保存
+reg = LinearRegression().fit(X, y)
+pickle.dump(reg, open(sage_model_pth, 'wb'))
+

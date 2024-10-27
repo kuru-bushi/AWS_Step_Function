@@ -69,3 +69,23 @@ $ ./aws/install
 - 下記を参考にした
     - https://github.com/amazonlinux/container-images/blob/36c1aadfc5c6f53c0572a40d41ede17b7c355bc9/Dockerfile
 -
+
+
+# sagemaker dir
+```
+/opt/ml
+├── input
+│   ├── config
+│   │   ├── hyperparameters.json
+│   │   └── resourceConfig.json
+│   └── data
+│       └── <channel_name>
+│           └── <input data>
+├── model
+│
+├── code
+│
+├── output
+│
+└── failure
+```

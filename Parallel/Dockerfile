@@ -9,15 +9,15 @@ RUN apt-get update \
     && dpkg-reconfigure --frontend noninteractive tzdata \
     && apt-get install -y git cmake make g++ zip libcurl4-openssl-dev libssl-dev uuid-dev zlib1g-dev libpulse-dev
 
-  
+RUN apt-get install python3-pip -y
+
 WORKDIR /tmp
 
-# COPY ./requirements.txt /tmp/
+COPY ./ECR/requirements.txt /tmp/
+COPY ./Train/train /opt/program/
 
-# RUN pip install -U pip \
-#     && pip install -r requirements.txt
-
-
+RUN python3 -m pip install -U pip \
+    && python3 -m pip install -r /tmp/requirements.txt
 
 # RUN git clone https://github.com/awslabs/aws-lambda-cpp-runtime.git && \
 #   cd aws-lambda-cpp-runtime && \
@@ -47,4 +47,5 @@ WORKDIR /tmp
 # WORKDIR /src
 # ENTRYPOINT ["run.sh"]
 
+ENTRYPOINT ["/bin/bash"]
 
