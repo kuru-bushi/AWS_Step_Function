@@ -1,8 +1,9 @@
 aws_account_id=$(aws sts get-caller-identity --query Account --output text)
 
+region=$(aws configure get region)
 lambda_and_ecr_name="test-lambda"
 user_name="ikeda-k"
-docker_img_name="test-lambda-img"
+docker_img_name=${lambda_and_ecr_name}
 
 # set -e
 
@@ -23,20 +24,24 @@ docker_img_name="test-lambda-img"
 #############
 
 
-# イメージのビルドとプッシュ
-aws ecr get-login-password --region region | docker login --username AWS --password-stdin ${aws_account_id}.dkr.ecr.region.amazonaws.com
-
-docker build -t ${docker_img_name} .
-
 #########################
-# docker build -t ${docker_img_name} .
+docker build -t ${docker_img_name} .
 ### ビルド省略用
 # docker build -t ${docker_img_name} . --no-cache
 #########################
-docker tag e9ae3c220b23 ${aws_account_id}.dkr.ecr.us-west-2.amazonaws.com/my-repository:tag
 
-docker push ${aws_account_id}.dkr.ecr.us-west-2.amazonaws.com/my-repository:tag
+aws ecr create-repository --repository-name ${lambda_and_ecr_name} --region ${region}
 
-CMD ["lambda_function.handler"]
+aws ecr get-login-password --region ${region} | docker login --username AWS --password-stdin ${aws_account_id}.dkr.ecr.${region}.amazonaws.com
+
+docker tag ${lambda_and_ecr_name} ${aws_account_id}.dkr.ecr.${region}.amazonaws.com/${lambda_and_ecr_name}:latest
+# イメージのビルドとプッシュ
+
+docker push ${aws_account_id}.dkr.ecr.${region}.amazonaws.com/${lambda_and_ecr_name}:latest
+
+
+docker rmi ${aws_account_id}.dkr.ecr.${region}.amazonaws.com/${lambda_and_ecr_name}:latest
+docker rmi ${docker_img_name}
+# # # CMD ["lambda_function.handler"]
 
 

@@ -1,5 +1,8 @@
 
 lambda_multiprocessing
+scikit-learn
 numpy
 pandas
+pyyaml
+# pickle
 

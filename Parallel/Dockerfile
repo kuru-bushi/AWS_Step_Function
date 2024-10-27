@@ -11,10 +11,12 @@ RUN apt-get update \
 
 RUN apt-get install python3-pip -y
 
+ARG prog_path="/opt/program/"
 WORKDIR /tmp
 
 COPY ./ECR/requirements.txt /tmp/
-COPY ./Train/train /opt/program/
+COPY ./Train/train ${prog_path}
+COPY ./Train/BaseTrainer.py /home
 
 RUN python3 -m pip install -U pip \
     && python3 -m pip install -r /tmp/requirements.txt
@@ -44,8 +46,20 @@ RUN python3 -m pip install -U pip \
 # COPY ./run.sh /usr/local/bin/run.sh
 # RUN chmod +x /usr/local/bin/run.sh
 
+
 # WORKDIR /src
 # ENTRYPOINT ["run.sh"]
 
-ENTRYPOINT ["/bin/bash"]
+# ARG sagemaker_prefix=""
 
+ENV PATH="${prog_path}:${PATH}"
+
+# 参考: https://docs.aws.amazon.com/sagemaker/latest/dg/prebuilt-containers-extend.html
+ENV SAGEMAKER_SUBMIT_DIRECTORY ${prog_path}
+ENV SAGEMAKER_PROGRAM train
+RUN chmod 777 -R /opt
+RUN chmod 777 -R /home
+
+WORKDIR ${prog_path}
+
+ 
